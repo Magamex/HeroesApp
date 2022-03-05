@@ -3,6 +3,9 @@ import { Heroe, Publisher } from '../../interfaces/heroes.interface';
 import { HeroesService } from '../../services/heroes.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmarComponent } from '../../components/confirmar/confirmar.component';
 
 @Component({
   selector: 'app-agregar',
@@ -38,7 +41,9 @@ export class AgregarComponent implements OnInit {
 
   constructor(private heroesService:HeroesService,
               private activatedRoute: ActivatedRoute,
-              private router: Router) { }
+              private router: Router,
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -62,20 +67,40 @@ export class AgregarComponent implements OnInit {
       this.heroesService.editarHeroe(this.heroe)
         .subscribe(resp => {
           console.log('Actualizando', resp);
+        this.mostrarSnackBar('Se actualizo Correctamente');
         })
     }else{
       this.heroesService.agregarHeroe(this.heroe)
       .subscribe(heroe => {
         this.router.navigate(['/heroes/editar', heroe.id]);
+        this.mostrarSnackBar('Se agrego Correctamente');
       })
     }
   }
 
   borrar(){
-    this.heroesService.borrarHeroe(this.heroe.id!)
-      .subscribe(resp => {
-        this.router.navigate(['/heroes']);
-      })
+    const dialog = this.dialog.open(ConfirmarComponent,{
+      width: '300px',
+      data: {...this.heroe}
+    })
+
+    dialog.afterClosed().subscribe(result => {
+      if(result){
+        this.heroesService.borrarHeroe(this.heroe.id!)
+          .subscribe(resp => {
+            this.router.navigate(['/heroes']);
+            this.mostrarSnackBar('Se borro Correctamente');
+          })
+      }
+    })
+
+
+  }
+
+  mostrarSnackBar(mensaje:string):void{
+    this.snackBar.open(mensaje, 'Cerrar', {
+      duration: 2000,
+    });
   }
 
 }
