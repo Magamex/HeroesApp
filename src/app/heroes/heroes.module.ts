@@ -10,6 +10,7 @@ import { ListadoComponent } from './pages/listado/listado.component';
 import { HeroesRoutingModule } from './heroes-routing.module';
 import { MaterialModule } from '../material/material.module';
 import { MatListModule } from '@angular/material/list';
+import { FormsModule } from '@angular/forms';
 import { HeroeTarjetaComponent } from './components/heroe-tarjeta/heroe-tarjeta.component';
 import { ImagenPipe } from './pipes/imagen.pipe';
 
@@ -27,6 +28,7 @@ import { ImagenPipe } from './pipes/imagen.pipe';
   imports: [
     CommonModule,
     FlexLayoutModule,
+    FormsModule,
     HeroesRoutingModule,
     MaterialModule,
     MatListModule
